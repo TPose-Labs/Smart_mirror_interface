@@ -60,17 +60,28 @@ class TwitterModule:
                           access_token_secret="dqVbh5ARQbxDgjKdo6yLAaGy8jhOVzQbpByuwAG38DlNP")
         self.text_top = Label(root, font=font_big, fg="white", bg="black",
                          padx=5)
+        self.text_top.grid(row=0)
         self.text_bot = Label(root, font=font_big, fg="white", bg="black",
                          padx=5)
+        self.text_bot.grid(row=1)
+        self.counter = 0
         self.loop()
 
     def loop(self):
         timeline = self.api.GetHomeTimeline()
-        timeline = [TwitterModule.process(tweet) for tweet in timeline]
-        for tweet in timeline:
-            self.text_top.config(text=tweet[0])
-            self.text_bot.config(text=tweet[1])
+        self.timeline = [TwitterModule.process(tweet) for tweet in timeline]
+        self.loop_helper()
         self.text_top.after(1000*60*60, self.loop)
+
+    def loop_helper(self):
+        if self.counter >= len(self.timeline):
+            self.counter = 0
+        tweet = self.timeline[self.counter]
+        print(tweet)
+        self.text_top.config(text=tweet[0])
+        self.text_bot.config(text=tweet[1])
+        self.counter += 1
+        self.text_top.after(20000, self.loop_helper)
 
     @staticmethod
     def process(tweet):
