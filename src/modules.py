@@ -70,7 +70,7 @@ class TwitterModule:
         for tweet in timeline:
             self.text_top.config(text=tweet[0])
             self.text_bot.config(text=tweet[1])
-        self.text_top.after(1, self.loop)
+        self.text_top.after(1000*60*60, self.loop)
 
     @staticmethod
     def process(tweet):
