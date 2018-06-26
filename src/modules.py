@@ -8,13 +8,22 @@ import re
 import utils
 import time
 
-class ClockModule:
+class Module:
 
     def __init__(self, root):
+        self.root = root
+
+    def pack(self, side=None):
+        self.root.pack(side=side)
+
+class ClockModule(Module):
+
+    def __init__(self, root):
+        super(ClockModule, self).__init__(root)
+
         font_big = Font(family="Helvetica", size=72)
         font_small = Font(family="Helvetica", size=48)
 
-        self.root = root
         self.day = Label(root, font=font_big, fg="white", bg="black",
                          padx=5)
         self.day.grid(row=0, sticky="w")
@@ -46,13 +55,13 @@ class ClockModule:
             self.fulldate.config(text=date)
         self.day.after(1000, self.loop)
 
-class TwitterModule:
+class TwitterModule(Module):
 
     def __init__(self, root):
+        super(TwitterModule, self).__init__(root)
+
         font_big = Font(family="Helvetica", size=36)
         font_small = Font(family="Helvetica", size=24)
-
-        self.root = root
 
         self.api = twitter.Api(consumer_key="E7YJ1iuJRp5HETovcuc9d4h39",
                           consumer_secret="45OupqmRLbNLxYY4o40nXmE29CfKYXAowohUSIL30cn4TUopR1",
