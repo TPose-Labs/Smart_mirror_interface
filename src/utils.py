@@ -1,16 +1,51 @@
-#ERROR: loadfont Only works in Windows
-'''
-from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
-def loadfont(fontpath, private=True, enumerable=False):
-    if isinstance(fontpath, bytes):
-        pathbuf = create_string_buffer(fontpath)
-        AddFontResourceEx = windll.gdi32.AddFontResourceExA
-    elif isinstance(fontpath, str):
-        pathbuf = create_unicode_buffer(fontpath)
-        AddFontResourceEx = windll.gdi32.AddFontResourceExW
-    else:
-        raise TypeError('fontpath must be of type str or unicode')
-    flags = (0X10 if private else 0) | (0x20c if not enumerable else 0)
-    numFontsAdded = AddFontResourceEx(byref(pathbuf), flags, 0)
-    return bool(numFontsAdded)
-'''
+from tkinter import Tk, Frame
+
+DAYS = {
+    "Sun": "Sunday",
+    "Mon": "Monday",
+    "Tue": "Tuesday",
+    "Wed": "Wednesday",
+    "Thu": "Thursday",
+    "Fri": "Friday",
+    "Sat": "Saturday",
+    "Sun": "Sunday"
+}
+
+MONTHS = {
+    "Jan": "January",
+    "Feb": "February",
+    "Mar": "March",
+    "Apr": "April",
+    "May": "May",
+    "Jun": "June",
+    "Jul": "July",
+    "Aug": "August",
+    "Sep": "September",
+    "Oct": "October",
+    "Nov": "November",
+    "Dec": "December"
+}
+
+LOCATIONS = {
+    "left": (0, 0),
+    "bottom": (4, 0)
+}
+
+
+class Container:
+
+    def __init__(self):
+        self.root = Tk()
+        self.modules = []
+
+        self.root.attributes('-fullscreen', True)
+        self.root.bind('<Escape>', lambda e: self.root.destroy())
+        self.root.configure(background="black")
+
+    def add_module(self, module, side):
+        self.modules.append(module(Frame(self.root, bg="black")))
+        location = LOCATIONS[side]
+        self.modules[-1].grid(row=location[0], column=location[1])
+
+    def start(self):
+        self.root.mainloop()
