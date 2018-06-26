@@ -1,4 +1,3 @@
-from tkinter import *
 from modules import TwitterModule, ClockModule
 from utils import Container
 

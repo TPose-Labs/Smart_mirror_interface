@@ -26,6 +26,12 @@ MONTHS = {
     "Dec": "December"
 }
 
+LOCATIONS = {
+    "left": (0, 0),
+    "bottom": (4, 0)
+}
+
+
 class Container:
 
     def __init__(self):
@@ -33,13 +39,13 @@ class Container:
         self.modules = []
 
         self.root.attributes('-fullscreen', True)
-        self.root.bind('<Escape>',lambda e: self.root.destroy())
+        self.root.bind('<Escape>', lambda e: self.root.destroy())
         self.root.configure(background="black")
 
     def add_module(self, module, side):
         self.modules.append(module(Frame(self.root, bg="black")))
-        self.modules[-1].pack(side=side)
+        location = LOCATIONS[side]
+        self.modules[-1].grid(row=location[0], column=location[1])
 
     def start(self):
         self.root.mainloop()
-

@@ -1,4 +1,4 @@
-from tkinter import Label
+from tkinter import Label, CENTER
 from tkinter.font import Font
 import datetime
 import calendar
@@ -6,7 +6,7 @@ import twitter
 import html
 import re
 import utils
-import time
+
 
 class Module:
 
@@ -15,6 +15,10 @@ class Module:
 
     def pack(self, side=None):
         self.root.pack(side=side)
+
+    def grid(self, row=0, column=0):
+        self.root.grid(row=row, column=column)
+
 
 class ClockModule(Module):
 
@@ -55,23 +59,29 @@ class ClockModule(Module):
             self.fulldate.config(text=date)
         self.day.after(1000, self.loop)
 
+
 class TwitterModule(Module):
 
     def __init__(self, root):
         super(TwitterModule, self).__init__(root)
 
         font_big = Font(family="Helvetica", size=36)
-        font_small = Font(family="Helvetica", size=24)
 
-        self.api = twitter.Api(consumer_key="E7YJ1iuJRp5HETovcuc9d4h39",
-                          consumer_secret="45OupqmRLbNLxYY4o40nXmE29CfKYXAowohUSIL30cn4TUopR1",
-                          access_token_key="4100343689-6o2O0WKj3V8ZEuPfJOm86TOVi0Ri5pHfVBR52d6",
-                          access_token_secret="dqVbh5ARQbxDgjKdo6yLAaGy8jhOVzQbpByuwAG38DlNP")
+        ckey = "E7YJ1iuJRp5HETovcuc9d4h39"
+        csec = "45OupqmRLbNLxYY4o40nXmE29CfKYXAowohUSIL30cn4TUopR1"
+        atkey = "4100343689-6o2O0WKj3V8ZEuPfJOm86TOVi0Ri5pHfVBR52d6"
+        atsec = "dqVbh5ARQbxDgjKdo6yLAaGy8jhOVzQbpByuwAG38DlNP"
+
+        self.api = twitter.Api(consumer_key=ckey,
+                               consumer_secret=csec,
+                               access_token_key=atkey,
+                               access_token_secret=atsec)
+
         self.text_top = Label(root, font=font_big, fg="white", bg="black",
-                         padx=5)
+                              padx=5)
         self.text_top.grid(row=0)
         self.text_bot = Label(root, font=font_big, fg="white", bg="black",
-                         padx=5)
+                              padx=5)
         self.text_bot.grid(row=1)
         self.counter = 0
         self.loop()
@@ -87,8 +97,8 @@ class TwitterModule(Module):
             self.counter = 0
         tweet = self.timeline[self.counter]
         print(tweet)
-        self.text_top.config(text=tweet[0])
-        self.text_bot.config(text=tweet[1])
+        self.text_top.config(text=tweet[0], justify=CENTER)
+        self.text_bot.config(text=tweet[1], justify=CENTER)
         self.counter += 1
         self.text_top.after(20000, self.loop_helper)
 
@@ -118,8 +128,11 @@ class TwitterModule(Module):
 
     @staticmethod
     def remove_unicode(tweet):
-        char_list = [tweet[j] for j in range(len(tweet)) if ord(tweet[j]) in range(65536)]
-        tweet=''
-        for j in char_list:
-            tweet=tweet+j
+        char_list = []
+        for i in range(len(tweet)):
+            if ord(tweet[i]) in range(65536):
+                char_list.append(tweet[i])
+        tweet = ''
+        for i in char_list:
+            tweet = tweet + i
         return tweet
