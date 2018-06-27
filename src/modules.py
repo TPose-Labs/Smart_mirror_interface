@@ -1,5 +1,6 @@
 from tkinter import Label, CENTER
 from tkinter.font import Font
+from weather import Weather, Unit
 import datetime
 import calendar
 import twitter
@@ -60,6 +61,54 @@ class ClockModule(Module):
         self.day.after(1000, self.loop)
 
 
+class WeatherModule(Module):
+
+    def __init__(self, root):
+        super(ClockModule, self).__init__(root)
+
+        font_big = Font(family="Helvetica", size=72)
+        font_small = Font(family="Helvetica", size=48)
+
+        self.temp_label = Label(root, font=font_big, fg="white", bg="black",
+                                padx=5)
+        self.temp_label.grid(row=0, sticky="w")
+        self.cond_label = Label(root, font=font_big, fg="white",
+                                bg="black", padx=5)
+        self.cond_label.grid(row=1, column=0, sticky="w")
+        self.forecasts_label = Label(root, font=font_small, fg="white", bg="black",
+                                     padx=5)
+        self.forecasts_label.grid(row=2, column=0, sticky="w")
+
+        self.temp = ""
+        self.cond = ""
+        self.forecasts = []
+        self.loop()
+
+    def list_forecasts(self):
+        forecast_list = ""
+        for forecast in self.forecasts:
+            forecast_list = forecast_list + forecast.date + ": " + forecast.text + ", "
+        return forecast_list
+
+    def loop(self):
+        weather = Weather(unit=Unit.FAHRENHEIT)
+        location = weather.lookup(12784268)
+        currweather = location.condition
+        temp = currweather.temp
+        cond = currweather.text
+        forecasts = location.forecast
+        if self.temp != temp:
+            self.temp = temp
+            self.temp_label.config(text=temp)
+        if self.cond != cond:
+            self.cond = cond
+            self.cond_label.config(text=cond)
+        if self.forecasts != forecasts:
+            self.forecasts = forecasts
+            self.forecasts_label.config(text=self.list_forecasts())
+        self.temp_label.after(1000, self.loop)
+
+
 class TwitterModule(Module):
 
     def __init__(self, root):
@@ -90,7 +139,7 @@ class TwitterModule(Module):
         timeline = self.api.GetHomeTimeline()
         self.timeline = [TwitterModule.process(tweet) for tweet in timeline]
         self.loop_helper()
-        self.text_top.after(1000*60*60, self.loop)
+        self.text_top.after(1000 * 60 * 60, self.loop)
 
     def loop_helper(self):
         if self.counter >= len(self.timeline):
