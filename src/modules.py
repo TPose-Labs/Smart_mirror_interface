@@ -64,7 +64,7 @@ class ClockModule(Module):
 class WeatherModule(Module):
 
     def __init__(self, root):
-        super(ClockModule, self).__init__(root)
+        super(WeatherModule, self).__init__(root)
 
         font_big = Font(family="Helvetica", size=72)
         font_small = Font(family="Helvetica", size=48)
