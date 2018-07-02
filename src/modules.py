@@ -97,8 +97,8 @@ class TwitterModule(Module):
             self.counter = 0
         tweet = self.timeline[self.counter]
         print(tweet)
-        self.text_top.config(text=tweet[0], justify=CENTER)
-        self.text_bot.config(text=tweet[1], justify=CENTER)
+        self.text_top.config(text=tweet[0])
+        self.text_bot.config(text=tweet[1])
         self.counter += 1
         self.text_top.after(20000, self.loop_helper)
 
@@ -123,8 +123,7 @@ class TwitterModule(Module):
             time = raw_time[:5] + " pm"
         if time[0] == "0":
             time = time[1:]
-        return "{}, {} {} at {}".format(day, month, time_split[2],
-                                        time)
+        return "{}, {} {} at {}".format(day, month, time_split[2], time)
 
     @staticmethod
     def remove_unicode(tweet):
