@@ -69,29 +69,36 @@ class WeatherModule(Module):
     def __init__(self, root):
         super(WeatherModule, self).__init__(root)
 
-        font_big = Font(family="Helvetica", size=72)
-        font_small = Font(family="Helvetica", size=48)
+        self.font_big = Font(family="Helvetica", size=72)
+        self.font_small = Font(family="Helvetica", size=48)
 
-        self.temp_label = Label(root, font=font_big, fg="white", bg="black",
+        self.temp_label = Label(root, font=self.font_big, fg="white", bg="black",
                                 padx=5)
         self.temp_label.grid(row=0, sticky="w")
-        self.cond_label = Label(root, font=font_big, fg="white",
+        self.cond_label = Label(root, font=self.font_big, fg="white",
                                 bg="black", padx=5)
         self.cond_label.grid(row=1, column=0, sticky="w")
-        self.forecasts_label = Label(root, font=font_small, fg="white", bg="black",
-                                     padx=5)
-        self.forecasts_label.grid(row=2, column=0, sticky="w")
-
+        self.forecast_labels = []
         self.temp = ""
         self.cond = ""
         self.forecasts = []
+        self.row_counter = 2
         self.loop()
 
     def list_forecasts(self):
         forecast_list = ""
-        for forecast in self.forecasts:
-            forecast_list = forecast_list + forecast.date + ": " + forecast.text + ", "
-        return forecast_list
+        for i in range(3):
+            forecast = self.forecasts[i]
+            self.forecast_labels.append(Label(self.root, font=self.font_small,
+                                              fg="white", bg="black",
+                                              padx=5))
+            self.forecast_labels[-1].grid(row=self.row_counter, column=0, sticky="w")
+            if i == 2:
+                self.forecast_labels[-1].config(text=forecast.date + ": " + forecast.text)
+            else:
+                self.forecast_labels[-1].config(text=forecast.date + ": " + \
+                                                forecast.text + ",")
+            self.row_counter += 1
 
     def loop(self):
         weather = Weather(unit=Unit.FAHRENHEIT)
@@ -106,9 +113,16 @@ class WeatherModule(Module):
         if self.cond != cond:
             self.cond = cond
             self.cond_label.config(text=cond)
-        if self.forecasts != forecasts:
+        if len(self.forecasts) != 0:
+            if self.forecasts[0].date != forecasts[0].date:
+                self.row_counter = 2
+                self.forecasts = forecasts
+                self.forecast_labels = []
+                self.list_forecasts()
+        else:
             self.forecasts = forecasts
-            self.forecasts_label.config(text=self.list_forecasts())
+            self.forecast_labels = []
+            self.list_forecasts()
         self.temp_label.after(1000, self.loop)
 
 
