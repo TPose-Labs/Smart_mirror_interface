@@ -120,15 +120,11 @@ class TwitterModule(Module):
         font_big = Font(family="Helvetica", size=36)
 
         self.load_api_credentials()
-        ckey = os.environ.get("CKEY")
-        csec = os.environ.get("CSEC")
-        atkey = os.environ.get("ATKEY")
-        atsec = os.environ.get("ATSEC")
 
-        self.api = twitter.Api(consumer_key=ckey,
-                               consumer_secret=csec,
-                               access_token_key=atkey,
-                               access_token_secret=atsec)
+        self.api = twitter.Api(consumer_key=self.ckey,
+                               consumer_secret=self.csec,
+                               access_token_key=self.atkey,
+                               access_token_secret=self.atsec)
 
         self.text_top = Label(root, font=font_big, fg="white", bg="black",
                               padx=5)
@@ -142,6 +138,10 @@ class TwitterModule(Module):
 
     def load_api_credentials(self):
         load_dotenv(join(dirname(__file__), '.env'))
+        self.ckey = os.environ.get("CKEY")
+        self.csec = os.environ.get("CSEC")
+        self.atkey = os.environ.get("ATKEY")
+        self.atsec = os.environ.get("ATSEC")
 
 
     def loop(self):
