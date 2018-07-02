@@ -156,7 +156,12 @@ class TwitterModule(Module):
         tweet = self.timeline[self.counter]
         print(tweet)
         self.text_top.config(text=tweet[0], justify=CENTER)
-        self.text_bot.config(text=tweet[1], justify=CENTER)
+        # TODO: crack this grid geometry thing.
+        # The 50 char max length is only a temporary fix
+        if len(tweet[1]) > 50:
+            self.text_bot.config(text=tweet[1][:50] + "...", justify=CENTER)
+        else:
+            self.text_bot.config(text=tweet[1], justify=CENTER)
         self.counter += 1
         self.text_top.after(20000, self.loop_helper)
 
