@@ -1,12 +1,15 @@
 from tkinter import Label, CENTER
 from tkinter.font import Font
 from weather import Weather, Unit
+from dotenv import load_dotenv
+from os.path import join, dirname
 import datetime
 import calendar
 import twitter
 import html
 import re
 import utils
+import os
 
 
 class Module:
@@ -116,10 +119,11 @@ class TwitterModule(Module):
 
         font_big = Font(family="Helvetica", size=36)
 
-        ckey = "E7YJ1iuJRp5HETovcuc9d4h39"
-        csec = "45OupqmRLbNLxYY4o40nXmE29CfKYXAowohUSIL30cn4TUopR1"
-        atkey = "4100343689-6o2O0WKj3V8ZEuPfJOm86TOVi0Ri5pHfVBR52d6"
-        atsec = "dqVbh5ARQbxDgjKdo6yLAaGy8jhOVzQbpByuwAG38DlNP"
+        self.load_api_credentials()
+        ckey = os.environ.get("CKEY")
+        csec = os.environ.get("CSEC")
+        atkey = os.environ.get("ATKEY")
+        atsec = os.environ.get("ATSEC")
 
         self.api = twitter.Api(consumer_key=ckey,
                                consumer_secret=csec,
@@ -134,6 +138,11 @@ class TwitterModule(Module):
         self.text_bot.grid(row=1)
         self.counter = 0
         self.loop()
+
+
+    def load_api_credentials(self):
+        load_dotenv(join(dirname(__file__), '.env'))
+
 
     def loop(self):
         timeline = self.api.GetHomeTimeline()
