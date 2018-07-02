@@ -28,7 +28,8 @@ MONTHS = {
 
 LOCATIONS = {
     "left": (0, 0),
-    "bottom": (4, 0)
+    "bottom": (4, 0),
+    "right": (0, 5)
 }
 
 
