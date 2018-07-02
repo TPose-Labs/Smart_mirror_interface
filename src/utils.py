@@ -33,6 +33,17 @@ LOCATIONS = {
 }
 
 
+def remove_unicode(_str):
+    char_list = []
+    for i in range(len(_str)):
+        if ord(_str[i]) in range(65536):
+            char_list.append(_str[i])
+    _str = ''
+    for i in char_list:
+        _str += i
+    return _str
+
+
 class Container:
 
     def __init__(self):

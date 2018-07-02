@@ -146,7 +146,7 @@ class TwitterModule(Module):
 
     def loop(self):
         timeline = self.api.GetHomeTimeline()
-        self.timeline = [TwitterModule.process(tweet) for tweet in timeline]
+        self.timeline = [self.process(tweet) for tweet in timeline]
         self.loop_helper()
         self.text_top.after(1000 * 60 * 60, self.loop)
 
@@ -154,7 +154,6 @@ class TwitterModule(Module):
         if self.counter >= len(self.timeline):
             self.counter = 0
         tweet = self.timeline[self.counter]
-        print(tweet)
         self.text_top.config(text=tweet[0], justify=CENTER)
         # TODO: crack this grid geometry thing.
         # The 50 char max length is only a temporary fix
@@ -165,17 +164,15 @@ class TwitterModule(Module):
         self.counter += 1
         self.text_top.after(20000, self.loop_helper)
 
-    @staticmethod
-    def process(tweet):
+    def process(self, tweet):
         removed_url = re.sub(r'http\S+', '', tweet.text)
         processed_text = html.unescape(removed_url)
-        text = TwitterModule.remove_unicode(processed_text)
+        text = utils.remove_unicode(processed_text)
         tweet_user = tweet.user.screen_name
-        tweet_time = TwitterModule.process_tweet_time(tweet.created_at)
+        tweet_time = self.process_tweet_time(tweet.created_at)
         return "Posted by @{} on {}:".format(tweet_user, tweet_time), text
 
-    @staticmethod
-    def process_tweet_time(tweet_time):
+    def process_tweet_time(self, tweet_time):
         time_split = tweet_time.split(" ")
         day = utils.DAYS[time_split[0]]
         month = utils.MONTHS[time_split[1]]
@@ -188,14 +185,3 @@ class TwitterModule(Module):
             time = time[1:]
         return "{}, {} {} at {}".format(day, month, time_split[2],
                                         time)
-
-    @staticmethod
-    def remove_unicode(tweet):
-        char_list = []
-        for i in range(len(tweet)):
-            if ord(tweet[i]) in range(65536):
-                char_list.append(tweet[i])
-        tweet = ''
-        for i in char_list:
-            tweet = tweet + i
-        return tweet
