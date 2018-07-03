@@ -5,6 +5,6 @@ container = Container()
 container.add_module(ClockModule, "left")
 container.add_module(TwitterModule, "bottom")
 container.add_module(WeatherModule, "right")
-container.add_module(StockModule, "rbot")
+container.add_module(StockModule, "rbot", stocks=["AAPL", "TSLA", "GOOGL"])
 
 container.start()

@@ -47,7 +47,7 @@ class Module:
 
 class ClockModule(Module):
 
-    def __init__(self, root, extra):
+    def __init__(self, root):
         super(ClockModule, self).__init__(root)
 
         font_big = Font(family="Helvetica", size=72)
@@ -88,7 +88,7 @@ class ClockModule(Module):
 
 class WeatherModule(Module):
 
-    def __init__(self, root, extra):
+    def __init__(self, root):
         super(WeatherModule, self).__init__(root)
 
         self.font_big = Font(family="Helvetica", size=72)
@@ -158,7 +158,7 @@ class WeatherModule(Module):
 
 class TwitterModule(Module):
 
-    def __init__(self, root, extra):
+    def __init__(self, root):
         super(TwitterModule, self).__init__(root)
 
         font_big = Font(family="Helvetica", size=36)

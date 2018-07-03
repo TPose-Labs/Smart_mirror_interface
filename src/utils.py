@@ -62,8 +62,12 @@ class Container:
         self.root.bind('<Escape>', lambda e: self.root.destroy())
         self.root.configure(background="black")
 
-    def add_module(self, module, side):
-        self.modules.append(module(Frame(self.root, bg="black"), ["AAPL", "TSLA"]))
+    def add_module(self, module, side, **kwargs):
+        if "stocks" in kwargs.keys():
+            self.modules.append(module(Frame(self.root, bg="black"),
+                                kwargs["stocks"]))
+        else:
+            self.modules.append(module(Frame(self.root, bg="black")))
         location = LOCATIONS[side]
         self.modules[-1].grid(row=location[0], column=location[1])
 
