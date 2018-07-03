@@ -24,9 +24,9 @@ class Module:
         implementing most of the functions in here,
         except for "loop," since that differs from module
         to module.
-    ''' 
+    '''
 
-    def __init__(self, root):
+    def __init__(self, root, side):
         self.root = root
         self.inside = []
 
@@ -47,21 +47,23 @@ class Module:
 
 class ClockModule(Module):
 
-    def __init__(self, root):
-        super(ClockModule, self).__init__(root)
+    def __init__(self, root, side):
+        super(ClockModule, self).__init__(root, side)
 
         font_big = Font(family="Helvetica", size=72)
         font_small = Font(family="Helvetica", size=48)
 
+        sticky = utils.sides[side]
+
         self.day = Label(root, font=font_big, fg="white", bg="black",
-                         padx=5)
-        self.day.grid(row=0, sticky="w")
+                         padx=0)
+        self.day.grid(row=0, sticky=sticky)
         self.fulldate = Label(root, font=font_small, fg="white",
-                              bg="black", padx=5)
-        self.fulldate.grid(row=1, column=0, sticky="w")
+                              bg="black", padx=0)
+        self.fulldate.grid(row=1, column=0, sticky=sticky)
         self.clock = Label(root, font=font_small, fg="white", bg="black",
-                           padx=5)
-        self.clock.grid(row=2, column=0, sticky="w")
+                           padx=0)
+        self.clock.grid(row=2, column=0, sticky=sticky)
 
         self.time = ""
         self.dotw = ""
@@ -88,18 +90,18 @@ class ClockModule(Module):
 
 class WeatherModule(Module):
 
-    def __init__(self, root):
-        super(WeatherModule, self).__init__(root)
-
+    def __init__(self, root, side):
+        super(WeatherModule, self).__init__(root, side)
+        self.sticky = utils.sides[side]
         self.font_big = Font(family="Helvetica", size=72)
         self.font_small = Font(family="Helvetica", size=48)
 
-        self.temp_label = Label(root, font=self.font_big, fg="white", bg="black",
-                                padx=5)
-        self.temp_label.grid(row=0, sticky="w")
+        self.temp_label = Label(root, font=self.font_big, fg="white",
+                                bg="black", padx=5)
+        self.temp_label.grid(row=0, sticky=self.sticky)
         self.cond_label = Label(root, font=self.font_big, fg="white",
                                 bg="black", padx=5)
-        self.cond_label.grid(row=1, column=0, sticky="w")
+        self.cond_label.grid(row=1, column=0, sticky=self.sticky)
         self.temp = ""
         self.cond = ""
         self.forecasts = []
@@ -107,19 +109,18 @@ class WeatherModule(Module):
         self.loop()
 
     def list_forecasts(self):
-        forecast_list = ""
         for i in range(3):
             forecast = self.forecasts[i]
             self.inside.append(Label(self.root, font=self.font_small,
-                                              fg="white", bg="black",
-                                              padx=5))
-            self.inside[-1].grid(row=self.row_counter, column=0, sticky="w")
+                                     fg="white", bg="black", padx=5))
+            self.inside[-1].grid(row=self.row_counter, column=0,
+                                 sticky=self.sticky)
             rearranged = self.rearrange_date(forecast.date)
             if i == 2:
                 self.inside[-1].config(text=rearranged + ": " + forecast.text)
             else:
-                self.inside[-1].config(text=rearranged + ": " + \
-                                                forecast.text + ",")
+                self.inside[-1].config(text=rearranged + ": " +
+                                       forecast.text + ",")
             self.row_counter += 1
 
     def rearrange_date(self, date):
@@ -158,8 +159,8 @@ class WeatherModule(Module):
 
 class TwitterModule(Module):
 
-    def __init__(self, root):
-        super(TwitterModule, self).__init__(root)
+    def __init__(self, root, side):
+        super(TwitterModule, self).__init__(root, side)
 
         font_big = Font(family="Helvetica", size=36)
 
@@ -174,7 +175,7 @@ class TwitterModule(Module):
                               padx=5)
         self.text_top.grid(row=0)
         self.text_bot = Label(root, font=font_big, fg="white", bg="black",
-                              padx=5)
+                              padx=5, wraplengt=500)
         self.text_bot.grid(row=1)
         self.counter = 0
         self.loop()
@@ -232,9 +233,9 @@ class TwitterModule(Module):
 
 class StockModule(Module):
 
-    def __init__(self, root, symbols):
-        super(StockModule, self).__init__(root)
-        
+    def __init__(self, root, side, symbols):
+        super(StockModule, self).__init__(root, side)
+        sticky = utils.sides[side]
         font_big = Font(family="Helvetica", size=36)
         self.inside = {}
 
@@ -243,17 +244,18 @@ class StockModule(Module):
         for symbol in self.symbols:
             self.inside[symbol] = Label(root, font=font_big, fg="white",
                                         bg="black", padx=5)
-            self.inside[symbol].grid(row=row_counter, sticky="w")
+            self.inside[symbol].grid(row=row_counter, sticky=sticky)
             row_counter += 1
         self.loop()
-    
+
     @utils.overrides(Module)
     def loop(self):
         quotes = self.get_quotes()
         for symbol in self.symbols:
             quote = quotes[symbol]
             self.inside[symbol].config(text=quote)
-        self.inside[list(self.inside.keys())[0]].after(1000 * 60 * 10, self.loop)
+        self.inside[list(self.inside.keys())[0]].after(1000 * 60 * 10,
+                                                       self.loop)
 
     def get_quotes(self):
         quotes = {}
@@ -263,6 +265,6 @@ class StockModule(Module):
             r = get(url_before + symbol + url_after)
             quote = r.json()["quote"]
             formatted = symbol + ": " + str(quote["latestPrice"]) + "\t" + \
-                        str(quote["change"])
+                str(quote["change"])
             quotes[symbol] = formatted
         return quotes

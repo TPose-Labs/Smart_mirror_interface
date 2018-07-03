@@ -33,6 +33,14 @@ LOCATIONS = {
     "rbot": (1, 1)
 }
 
+sides = {
+    "left": "w",
+    "top": "n",
+    "bottom": "s",
+    "right": "e",
+    "rbot": "e"
+}
+
 
 def remove_unicode(_str):
     char_list = []
@@ -65,9 +73,10 @@ class Container:
     def add_module(self, module, side, **kwargs):
         if "stocks" in kwargs.keys():
             self.modules.append(module(Frame(self.root, bg="black"),
-                                kwargs["stocks"]))
+                                side, kwargs["stocks"]))
         else:
-            self.modules.append(module(Frame(self.root, bg="black")))
+            self.modules.append(module(Frame(self.root, bg="black"),
+                                side))
         location = LOCATIONS[side]
         self.modules[-1].grid(row=location[0], column=location[1])
 
