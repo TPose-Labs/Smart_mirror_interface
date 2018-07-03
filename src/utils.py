@@ -29,7 +29,8 @@ MONTHS = {
 LOCATIONS = {
     "left": (0, 0),
     "bottom": (1, 0),
-    "right": (0, 1)
+    "right": (0, 1),
+    "rbot": (1, 1)
 }
 
 
@@ -44,6 +45,13 @@ def remove_unicode(_str):
     return _str
 
 
+def overrides(interface_class):
+    def overrider(method):
+        assert(method.__name__ in dir(interface_class))
+        return method
+    return overrider
+
+
 class Container:
 
     def __init__(self):
@@ -55,7 +63,7 @@ class Container:
         self.root.configure(background="black")
 
     def add_module(self, module, side):
-        self.modules.append(module(Frame(self.root, bg="black")))
+        self.modules.append(module(Frame(self.root, bg="black"), ["AAPL", "TSLA"]))
         location = LOCATIONS[side]
         self.modules[-1].grid(row=location[0], column=location[1])
 
